@@ -1,7 +1,3 @@
-// Maria Garcia
-// MARP17
-
-
 #include <iostream>
 #include <iomanip>
 #include <fstream>
