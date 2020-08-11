@@ -1,0 +1,105 @@
+// María García Raldúa
+// MARP17
+
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <algorithm>
+#include <vector>
+#include <istream>
+#include <queue>
+#include <string>
+
+
+using namespace std;
+
+struct trabajos {
+	int x, y;
+};
+
+int compare(trabajos const &a, trabajos const &b) {
+	return a.x < b.x;
+}
+
+//Coste de la solucion: O(n) siendo n el numero de trabajos
+
+bool num_trabajos(vector<trabajos> &vec, int C, int F, int &ntrabajos) {
+	ntrabajos = 0;
+	int der = C;
+	int izq = C;
+	bool success = false;
+	for (int i = 0; i < vec.size() && der < F; i++) {
+		if (vec[i].x <= izq) {
+			if (vec[i].y > der) {
+				der = vec[i].y;
+				success = true;
+			}
+		}
+			else {
+				if (success) {
+					success = false;
+					ntrabajos++;
+					izq = der;
+					i--;
+				}
+				else break;
+			}
+		
+		
+	}
+	if (success) ntrabajos++;
+	if (der < F)return false;
+	else
+	return true;
+}
+
+bool resuelveCaso() {
+	int N,C,F;
+	cin >> C >> F >> N;
+	if (!cin || N < 0 || N == 0 && F == 0 && C == 0)
+		return false;
+
+	int a = 0;
+	int b = 0;
+	vector<trabajos> vec;
+	for (int i = 0; i < N; i++) {
+		cin >> a >> b;
+		vec.push_back({ a,b });
+	}
+
+	sort(vec.begin(), vec.end(), compare);
+	int res = 0;
+	if (num_trabajos(vec, C, F, res)) {
+		cout << res << '\n';
+	}
+	else
+		cout << "imposible" << '\n';
+	
+
+
+	return true;
+}
+
+
+int main() {
+	// Para la entrada por fichero.
+	// Comentar para acepta el reto
+#ifndef DOMJUDGE
+	std::ifstream in("datos.txt");
+	auto cinbuf = std::cin.rdbuf(in.rdbuf()); //save old buf and redirect std::cin to casos.txt
+#endif 
+
+	while (resuelveCaso()) {
+
+	}
+
+
+
+	// Para restablecer entrada. Comentar para acepta el reto
+#ifndef DOMJUDGE // para dejar todo como estaba al principio
+	std::cin.rdbuf(cinbuf);
+	system("PAUSE");
+#endif
+
+	return 0;
+}
