@@ -5,58 +5,51 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <istream>
 #include <queue>
+#include <vector>
+#include <string>
+
+
 
 using namespace std;
 
-struct ucm {
-	int periodo;
-	int usuario;
-	int cola;
-};
 
-
-bool operator<(ucm const& a, ucm const& b) {
-	return (a.cola > b.cola || a.cola == b.cola && a.usuario > b.usuario);
+int parcheado(vector<int> const & v, int L) {
+	int n = v.size();
+	int parches = 1;
+	int agujero = v[0];
+	for (int i = 1; i < n; i++) {
+		if (v[i] - agujero > L) {
+			parches++;
+			
+		}
+		
+			agujero = v[i];
+		
+	}
+	return parches;
 }
-
-
 
 // Resuelve un caso de prueba, leyendo de la entrada la
 // configuración, y escribiendo la respuesta
 bool resuelveCaso() {
 	// leer los datos de la entrada
-	int num = 0;
-	cin >> num;
-	if (!std::cin || num == 0)
+	int N, L;
+	cin >> N >> L;
+	if (!std::cin) {
 		return false;
-	priority_queue<ucm> unidad;
-	int id;
-	int per;
-	for (int i = 0; i < num; i++) {
-		cin >> id;
-		cin >> per;
-		unidad.push({per,id,per});
 	}
-
-	int consultas;
-	cin >> consultas;
-
-	while (consultas--) {
-		ucm u = unidad.top(); unidad.pop();
-		cout << u.usuario << '\n';
-		u.cola += u.periodo;
-		unidad.push(u);
+	vector<int> agujeros(N);
+	int a;
+	for (int i = 0; i < N; i++) {
+		cin >> a;
+		agujeros[i] = a;
 	}
-
 	
-
-	cout << "----" << '\n';
+	int solucion = parcheado(agujeros, L);
+	cout << solucion << '\n';
 	
-
-
-
-
 	return true;
 
 }
@@ -70,8 +63,9 @@ int main() {
 #endif 
 
 
-	while (resuelveCaso())
-		;
+	while (resuelveCaso()) {
+
+	};
 
 
 	// Para restablecer entrada. Comentar para acepta el reto

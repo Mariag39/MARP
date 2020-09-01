@@ -1,97 +1,98 @@
-// Maria Garcia Raldua
-//MARP17
+﻿// María
+
 
 
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <istream>
+#include <queue>
 #include <vector>
+#include "Grafo.h"
+#include <string>
 #include "GrafoValorado.h"
 using namespace std;
-//amazon prime por 12 euros
+
+
+
 class camiones {
 public:
-	camiones(GrafoValorado<int> const &g, int origen, int destino, int weight) :marked(g.V(), false), solucion(false),
-	dest(destino),anch(weight){
-		
-				dfs(g,origen);
-		
+	camiones(GrafoValorado<int> const& gv, int& orig, int& dest, int& v): marked(gv.V(),false),imposible(true),valor(0) {
+		dfs(orig, dest, v,gv);
 	}
 
-	bool isPosible() {
-		return solucion;
+	bool esimposible() {
+		return imposible;
 	}
 
 private:
 	vector<bool> marked;
-	int orig;
-	int dest;
-	bool solucion;
-	int anch;
+	bool imposible;
+	int valor;
 
-	void dfs(GrafoValorado<int>const & g, int &origen) {
-		marked[origen] = true;
-		for (auto w : g.ady(origen)) {
-			int other = w.otro(origen);
-			if (!marked[other] && w.valor() >= anch) {
-				if (other == dest) {
-					solucion = true;
+	void dfs(int o, int d, int val, GrafoValorado<int> const& gv) {
+		marked[o] = true;
+		for (auto w : gv.ady(o)) {
+			if (!marked[w.otro(o)]) {
+				if (w.valor() >= val) {
+					if (w.otro(o) == d) {
+						imposible = false;
+					}
+					else {
+						dfs(w.otro(o), d, val, gv);
+					}
 				}
-				else {
-					
-					dfs(g, other);
-				}
+				
 			}
 		}
-	
-		
 	}
+
 };
 
 
+// Resuelve un caso de prueba, leyendo de la entrada la
+// configuración, y escribiendo la respuesta
 bool resuelveCaso() {
+	// leer los datos de la entrada
 	int V, E;
-	cin >> V;
-	cin >> E;
-	if (!cin) {
+	cin >> V >> E;
+
+	if (!std::cin) {
 		return false;
 	}
 	GrafoValorado<int> g(V);
 	int v, w, value;
-	for (int i = 0; i < E; ++i) {
+	for (int i = 0; i < E; i++) {
 		cin >> v >> w >> value;
-		Arista<int> temp(v - 1, w - 1, value);
-		g.ponArista(temp);
-		
+		g.ponArista(Arista<int>(v - 1, w - 1, value));
 	}
-	int n;
+	int n,o,d,val;
 	cin >> n;
 	for (int i = 0; i < n; i++) {
-		cin >> v >> w >> value;
-		camiones b(g,v - 1,w - 1, value);
-		
-		if (b.isPosible()) {
-			cout << "SI" << '\n';
-		}
-		else {
-			cout << "NO" << '\n';
-		}
+		cin >> o >> d >> val;
+		o--;
+		d--;
+		camiones c(g, o, d, val);
+		if (!c.esimposible()) cout << "SI" << '\n';
+		else cout << "NO" << '\n';
 	}
-	return true;
-}
 
+	return true;
+
+}
 
 int main() {
 	// Para la entrada por fichero.
- //Comentar para acepta el reto
+	// Comentar para acepta el reto
 #ifndef DOMJUDGE
 	std::ifstream in("datos.txt");
 	auto cinbuf = std::cin.rdbuf(in.rdbuf()); //save old buf and redirect std::cin to casos.txt
 #endif 
 
 
-	while (resuelveCaso())
-		;
+	while (resuelveCaso()) {
+
+	};
 
 
 	// Para restablecer entrada. Comentar para acepta el reto

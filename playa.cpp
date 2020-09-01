@@ -5,57 +5,58 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <istream>
 #include <queue>
+#include <vector>
+#include <string>
+
+
 
 using namespace std;
 
-struct ucm {
-	int periodo;
-	int usuario;
-	int cola;
+//O(nlogn)
+struct edificio {
+	int o;
+	int e;
 };
 
-
-bool operator<(ucm const& a, ucm const& b) {
-	return (a.cola > b.cola || a.cola == b.cola && a.usuario > b.usuario);
+bool operator <(edificio const &a, edificio const &b) {
+	return a.o > b.o;
 }
-
-
 
 // Resuelve un caso de prueba, leyendo de la entrada la
 // configuración, y escribiendo la respuesta
 bool resuelveCaso() {
 	// leer los datos de la entrada
-	int num = 0;
-	cin >> num;
-	if (!std::cin || num == 0)
+	int N;
+	cin >> N;
+	if (!std::cin || N == 0) {
 		return false;
-	priority_queue<ucm> unidad;
-	int id;
-	int per;
-	for (int i = 0; i < num; i++) {
-		cin >> id;
-		cin >> per;
-		unidad.push({per,id,per});
+	}
+	priority_queue<edificio> playa;
+	int a, b;
+	for (int i = 0; i < N; i++) {
+		cin >> a >> b;
+		playa.push({a,b});
+	}
+	int pasadizos = 0;
+
+	while (!playa.empty()) {
+		edificio ed = playa.top(); playa.pop();
+		pasadizos++;
+		int size = ed.e - 1;
+		while (!playa.empty()) {
+			edificio aux = playa.top(); 
+			if (size < aux.o) {
+				break;
+			}
+			size = min(aux.e - 1, size);
+			playa.pop();
+		}
 	}
 
-	int consultas;
-	cin >> consultas;
-
-	while (consultas--) {
-		ucm u = unidad.top(); unidad.pop();
-		cout << u.usuario << '\n';
-		u.cola += u.periodo;
-		unidad.push(u);
-	}
-
+	cout << pasadizos << '\n';
 	
-
-	cout << "----" << '\n';
-	
-
-
-
 
 	return true;
 
@@ -70,8 +71,9 @@ int main() {
 #endif 
 
 
-	while (resuelveCaso())
-		;
+	while (resuelveCaso()) {
+
+	};
 
 
 	// Para restablecer entrada. Comentar para acepta el reto

@@ -6,57 +6,57 @@
 #include <iomanip>
 #include <fstream>
 #include <queue>
-
+#include <vector>
 using namespace std;
 
-struct ucm {
-	int periodo;
-	int usuario;
-	int cola;
+//O(plogn)
+
+struct partituras {
+	int part;
+	int musicos;
+	int ini;
 };
 
-
-bool operator<(ucm const& a, ucm const& b) {
-	return (a.cola > b.cola || a.cola == b.cola && a.usuario > b.usuario);
+bool operator <(partituras const& a, partituras const& b) {
+	return (a.musicos < b.musicos);
 }
-
-
 
 // Resuelve un caso de prueba, leyendo de la entrada la
 // configuración, y escribiendo la respuesta
 bool resuelveCaso() {
 	// leer los datos de la entrada
-	int num = 0;
-	cin >> num;
-	if (!std::cin || num == 0)
+	int p,n;
+	cin >> p >> n;
+	if (!std::cin) {
+
 		return false;
-	priority_queue<ucm> unidad;
-	int id;
-	int per;
-	for (int i = 0; i < num; i++) {
-		cin >> id;
-		cin >> per;
-		unidad.push({per,id,per});
+	}
+	priority_queue<partituras> atril;
+	int ins;
+	for (int i = 0; i < n; i++) {
+		cin >> ins;
+		atril.push({ 2, ins, ins });
 	}
 
-	int consultas;
-	cin >> consultas;
+	p -= n;
 
-	while (consultas--) {
-		ucm u = unidad.top(); unidad.pop();
-		cout << u.usuario << '\n';
-		u.cola += u.periodo;
-		unidad.push(u);
+	
+	
+	while (p--) {
+		partituras t = atril.top(); atril.pop();
+		if (t.ini % t.part == 0) {
+			t.musicos = t.ini / t.part;
+			atril.push({t.part++,t.musicos});
+		}
+		else {
+			t.musicos = t.ini % t.part;
+			atril.push({t.part++,t.musicos});
+		}
 	}
-
 	
-
-	cout << "----" << '\n';
 	
-
-
-
-
+	cout << atril.top().musicos << '\n';
+	
 	return true;
 
 }

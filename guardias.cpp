@@ -10,35 +10,52 @@
 #include "Grafo.h"
 using namespace std;
 
-class bipartito {
+class guardias {
 public:
-	bipartito(Grafo const& g) : marked(g.V(), false), colores(g.V(), false),noposible(false) {
+	guardias(Grafo const& g) : marked(g.V(), false),guards(g.V(),false),numguardsno(0),numguardssi(0), imposible(false),
+	maximo(0){
 		for (int v = 0; v < g.V(); ++v) {
-			dfs(g, v);
+			numguardssi = 0;
+			numguardsno = 0;
+			if (!marked[v]) {
+				numguardsno++;
+				dfs(g, v, numguardssi, numguardsno);
+			}
+			maximo += min(numguardssi, numguardsno);
 		}
 	}
 
-	bool imposible() {
-		return noposible;
+	void solucion() {
+		if (imposible) {
+			cout << "IMPOSIBLE" << '\n';
+		}
+		else
+			cout << maximo << '\n';
 	}
 
 private:
 	vector<bool> marked;
-	vector<bool> colores;
-	bool noposible;
+	vector<bool> guards;
+	bool imposible;
+	int maximo;
+	int numguardssi;
+	int numguardsno;
 
-	void dfs(Grafo const& g, int v) {
+	void dfs(Grafo const& g, int v, int& n, int& no) {
 		marked[v] = true;
 		for (int w : g.ady(v)) {
 			if (!marked[w]) {
-				colores[w] = !colores[v];
-				dfs(g, w);
+				guards[w] = !guards[v];
+				if (guards[w])
+					n++;
+				else
+					no++;
+				dfs(g, w,n,no);
 			}
-			else if(marked[w] && colores[w] == colores[v]) {
-				noposible = true;
-				return;
+			else if (marked[w] && guards[w] == guards[v]) {
+				imposible = true;
 			}
-			
+
 		}
 	}
 };
@@ -59,18 +76,11 @@ bool resuelveCaso() {
 	int v, w;
 	for (int i = 0; i < E; ++i) {
 		cin >> v >> w;
-		grafo.ponArista(v, w);
-	}
-	
-	bipartito b(grafo);
-
-	if (b.imposible()) {
-		cout << "NO" << '\n';
-	}
-	else {
-		cout << "SI" << '\n';
+		grafo.ponArista(v - 1, w - 1);
 	}
 
+	guardias g(grafo);
+	g.solucion();
 	return true;
 
 }

@@ -7,38 +7,44 @@
 #include <fstream>
 #include <queue>
 #include <vector>
-#include "Grafo.h"
+//#include "Grafo.h"
 using namespace std;
 
-class bipartito {
+using Grafo = vector<vector<int>>;
+
+class noticias {
 public:
-	bipartito(Grafo const& g) : marked(g.V(), false), colores(g.V(), false),noposible(false) {
-		for (int v = 0; v < g.V(); ++v) {
-			dfs(g, v);
+	noticias(Grafo const& g): marked(g.size(),false),personas(g.size()) {
+		for (int v = 0; v < g.size(); ++v) {
+			if (!marked[v]) {
+				int nn = 1;
+				dfs(g, v, nn);
+
+				personas[v] = nn;
+			}
 		}
 	}
 
-	bool imposible() {
-		return noposible;
+	vector<int> solucion() {
+		return personas;
 	}
-
+	
 private:
 	vector<bool> marked;
-	vector<bool> colores;
-	bool noposible;
+	vector<int> personas;
+	vector<int> size;
+	
 
-	void dfs(Grafo const& g, int v) {
+	void dfs(Grafo const& g, int v, int& nn) {
 		marked[v] = true;
-		for (int w : g.ady(v)) {
+		
+		for (int w : g[v]) {
 			if (!marked[w]) {
-				colores[w] = !colores[v];
-				dfs(g, w);
+				nn++;
+				dfs(g, w,nn);
+				personas[w] = nn;
 			}
-			else if(marked[w] && colores[w] == colores[v]) {
-				noposible = true;
-				return;
-			}
-			
+
 		}
 	}
 };
@@ -57,20 +63,28 @@ bool resuelveCaso() {
 
 	Grafo grafo(V);
 	int v, w;
+	int n = 0;
 	for (int i = 0; i < E; ++i) {
-		cin >> v >> w;
-		grafo.ponArista(v, w);
+		cin >> n;
+		if (n > 0) {
+			cin >> v;
+			v--;
+			for (int i = 1; i < n; i++) {
+				cin >> w;
+				w--;
+				grafo[v].push_back(w);
+				grafo[w].push_back(v);
+				v = w;
+			}
+		}
 	}
-	
-	bipartito b(grafo);
 
-	if (b.imposible()) {
-		cout << "NO" << '\n';
-	}
-	else {
-		cout << "SI" << '\n';
+	noticias g(grafo);
+	for (int i = 0; i < g.solucion().size(); i++) {
+		cout << g.solucion()[i] << " ";
 	}
 
+	cout << '\n';
 	return true;
 
 }

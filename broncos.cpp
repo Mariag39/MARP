@@ -5,57 +5,52 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <istream>
 #include <queue>
+#include <vector>
+#include <string>
+
+
 
 using namespace std;
 
-struct ucm {
-	int periodo;
-	int usuario;
-	int cola;
-};
-
-
-bool operator<(ucm const& a, ucm const& b) {
-	return (a.cola > b.cola || a.cola == b.cola && a.usuario > b.usuario);
-}
-
-
+//O(nlogn)
 
 // Resuelve un caso de prueba, leyendo de la entrada la
 // configuración, y escribiendo la respuesta
 bool resuelveCaso() {
 	// leer los datos de la entrada
-	int num = 0;
-	cin >> num;
-	if (!std::cin || num == 0)
+	int N;
+	cin >> N;
+	if (!std::cin || N == 0) {
 		return false;
-	priority_queue<ucm> unidad;
-	int id;
-	int per;
-	for (int i = 0; i < num; i++) {
-		cin >> id;
-		cin >> per;
-		unidad.push({per,id,per});
+	}
+	vector<int> rivales(N);
+	vector<int> broncos(N);
+	int b;
+	for (int i = 0; i < N; i++) {
+		cin >> b;
+		rivales[i] = b;
 	}
 
-	int consultas;
-	cin >> consultas;
-
-	while (consultas--) {
-		ucm u = unidad.top(); unidad.pop();
-		cout << u.usuario << '\n';
-		u.cola += u.periodo;
-		unidad.push(u);
+	for (int i = 0; i < N; i++) {
+		cin >> b;
+		broncos[i] = b;
 	}
 
-	
+	sort(rivales.begin(), rivales.end(), greater<int>());
+	sort(broncos.begin(), broncos.end(), less<int>());
 
-	cout << "----" << '\n';
-	
+	int suma_diff = 0;
 
+	for (int i = 0; i < N; i++) {
+		if (rivales[i] < broncos[i]) {
+			int aux = broncos[i] - rivales[i];
+			suma_diff += aux;
+		}
+	}
 
-
+	cout << suma_diff << '\n';
 
 	return true;
 
@@ -70,8 +65,9 @@ int main() {
 #endif 
 
 
-	while (resuelveCaso())
-		;
+	while (resuelveCaso()) {
+
+	};
 
 
 	// Para restablecer entrada. Comentar para acepta el reto

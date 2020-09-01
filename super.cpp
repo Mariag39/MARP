@@ -9,53 +9,38 @@
 
 using namespace std;
 
-struct ucm {
-	int periodo;
-	int usuario;
-	int cola;
+struct fila {
+	int index;
+	int valor;
 };
 
-
-bool operator<(ucm const& a, ucm const& b) {
-	return (a.cola > b.cola || a.cola == b.cola && a.usuario > b.usuario);
+bool operator<(fila const& a, fila const& b) {
+	return (a.valor > b.valor || a.valor == b.valor && a.index > b.index);
 }
-
 
 
 // Resuelve un caso de prueba, leyendo de la entrada la
 // configuración, y escribiendo la respuesta
 bool resuelveCaso() {
 	// leer los datos de la entrada
-	int num = 0;
-	cin >> num;
-	if (!std::cin || num == 0)
+	int N,C = 0;
+	cin >> N >> C;
+	if (!std::cin || N == 0 && C == 0)
 		return false;
-	priority_queue<ucm> unidad;
-	int id;
-	int per;
-	for (int i = 0; i < num; i++) {
-		cin >> id;
-		cin >> per;
-		unidad.push({per,id,per});
+	priority_queue<fila> cajas;
+	int p;
+	for (int i = 0; i < N; i++) {
+		cajas.push({ i,0 });
 	}
 
-	int consultas;
-	cin >> consultas;
-
-	while (consultas--) {
-		ucm u = unidad.top(); unidad.pop();
-		cout << u.usuario << '\n';
-		u.cola += u.periodo;
-		unidad.push(u);
+	for(int i = 0; i < C; i++){
+		fila f = cajas.top(); cajas.pop();
+		cin >> p;
+		f.valor = p;
+		cajas.push(f);
 	}
 
-	
-
-	cout << "----" << '\n';
-	
-
-
-
+	cout << cajas.top().index + 1 << '\n';
 
 	return true;
 

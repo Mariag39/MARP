@@ -5,20 +5,17 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <istream>
 #include <queue>
+#include <vector>
+#include <string>
+
+
 
 using namespace std;
 
-struct ucm {
-	int periodo;
-	int usuario;
-	int cola;
-};
+//O(nlogn)
 
-
-bool operator<(ucm const& a, ucm const& b) {
-	return (a.cola > b.cola || a.cola == b.cola && a.usuario > b.usuario);
-}
 
 
 
@@ -26,36 +23,39 @@ bool operator<(ucm const& a, ucm const& b) {
 // configuración, y escribiendo la respuesta
 bool resuelveCaso() {
 	// leer los datos de la entrada
-	int num = 0;
-	cin >> num;
-	if (!std::cin || num == 0)
+	int N,V;
+	cin >> N >> V;
+	if (!std::cin || N == 0) {
 		return false;
-	priority_queue<ucm> unidad;
-	int id;
-	int per;
-	for (int i = 0; i < num; i++) {
-		cin >> id;
-		cin >> per;
-		unidad.push({per,id,per});
+	}
+	vector<int> coches(N);
+	int x;
+	for (int i = 0; i < N; i++) {
+		cin >> x;
+		coches[i] = x;
 	}
 
-	int consultas;
-	cin >> consultas;
+	sort(coches.begin(),coches.end(), less<int>());
 
-	while (consultas--) {
-		ucm u = unidad.top(); unidad.pop();
-		cout << u.usuario << '\n';
-		u.cola += u.periodo;
-		unidad.push(u);
+	int ncoches = 0;
+	int fin = N - 1;
+	int a = 0;
+	
+	while (a < N) {
+		if (coches[a] + coches[fin] >= V) {
+			ncoches++;
+			a++;
+		}
 	}
 
-	
+	for (int i = fin; i > a; i--) {
+		if (coches[a] + coches[i] >= V) {
+			ncoches++;
+			a++;
+		}
+	}
 
-	cout << "----" << '\n';
-	
-
-
-
+	cout << ncoches << '\n';
 
 	return true;
 
@@ -70,8 +70,9 @@ int main() {
 #endif 
 
 
-	while (resuelveCaso())
-		;
+	while (resuelveCaso()) {
+
+	};
 
 
 	// Para restablecer entrada. Comentar para acepta el reto

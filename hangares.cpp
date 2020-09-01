@@ -6,56 +6,55 @@
 #include <iomanip>
 #include <fstream>
 #include <queue>
-
+#include <vector>
 using namespace std;
 
-struct ucm {
-	int periodo;
-	int usuario;
-	int cola;
-};
-
-
-bool operator<(ucm const& a, ucm const& b) {
-	return (a.cola > b.cola || a.cola == b.cola && a.usuario > b.usuario);
-}
-
-
+//O(nlogn)
 
 // Resuelve un caso de prueba, leyendo de la entrada la
 // configuración, y escribiendo la respuesta
 bool resuelveCaso() {
 	// leer los datos de la entrada
-	int num = 0;
-	cin >> num;
-	if (!std::cin || num == 0)
+	int H;
+	cin >> H;
+	if (!std::cin || H < 1) {
+		
 		return false;
-	priority_queue<ucm> unidad;
-	int id;
-	int per;
-	for (int i = 0; i < num; i++) {
-		cin >> id;
-		cin >> per;
-		unidad.push({per,id,per});
 	}
-
-	int consultas;
-	cin >> consultas;
-
-	while (consultas--) {
-		ucm u = unidad.top(); unidad.pop();
-		cout << u.usuario << '\n';
-		u.cola += u.periodo;
-		unidad.push(u);
+	priority_queue<int> hangares;
+	vector<int> aviones;
+	int h;
+	for (int i = 0; i < H; i++) {
+		cin >> h;
+		hangares.push(h);
 	}
+	int N;
+	cin >> N;
+	if (!std::cin || N < 0) {
 
-	
-
-	cout << "----" << '\n';
-	
-
-
-
+		return false;
+	}
+	int a;
+	for (int i = 0; i < N; i++) {
+		cin >> a;
+		aviones.push_back(a);
+	}
+	bool nope = false;
+	for(int i = 0; i < aviones.size(); i++){
+		int hangar = hangares.top(); hangares.pop();
+		hangar -= aviones[i];
+		if (hangar > 0) {
+			hangares.push(hangar);
+		}
+		else if(hangar < 0) {
+			cout << "NO" << '\n';
+			nope = true;
+			break;
+		}
+	}
+	if(!nope)
+		cout << "SI" << '\n';
+		
 
 	return true;
 
